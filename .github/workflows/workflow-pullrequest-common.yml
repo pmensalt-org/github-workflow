@@ -1,0 +1,66 @@
+name: Workflow PullRequest Common
+
+on:
+  workflow_call:
+    inputs:
+      server-id:
+        required: true
+        type: string
+      use-java:
+        required: false
+        type: boolean
+        default: true
+      java-version:
+        required: false
+        type: string
+        default: '25'
+      settings-file:
+        required: true
+        type: string   
+
+jobs:
+  workflow-pull-request-common:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: read
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}   # checkout the correct branch name
+          
+      - name: Setup Java
+        if: ${{ inputs.use-java }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: 'graalvm'
+          server-id: ${{ inputs.server-id }}
+
+      - name: Download Settings File
+        run: |
+          curl -o settings.xml -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ inputs.settings-file }}  
+          
+      - name: Build with Maven
+        env:
+          TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
+        run: mvn -B package --file pom.xml --settings settings.xml
+
+      - name: View PR author
+        run: echo "This PR is opened by ${{ github.event.pull_request.user.login }} ."
+        
+      - name: Dependabot metadata
+        if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+        
+      - name: Enable auto-merge for Dependabot PRs
+        if: ${{github.event.pull_request.user.login == 'dependabot[bot]'}} && (steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor')
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}          
