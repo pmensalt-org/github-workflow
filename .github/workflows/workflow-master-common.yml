@@ -46,27 +46,27 @@ jobs:
         run: |
           cat > ~/.m2/settings.xml <<EOF
 <settings>
-  <servers>
-    <server>
-      <id>github</id>
-      <username>${GITHUB_ACTOR}</username>
-      <password>${GITHUB_TOKEN}</password>
-    </server>
-  </servers>
-  <profiles>
-    <profile>
-      <id>github</id>
-      <repositories>
-        <repository>
-          <id>github-parent</id>
-          <url>https://maven.pkg.github.com/pmensalt/pieter-pom</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-  <activeProfiles>
-    <activeProfile>github</activeProfile>
-  </activeProfiles>
+<servers>
+<server>
+<id>github</id>
+<username>${GITHUB_ACTOR}</username>
+<password>${GITHUB_TOKEN}</password>
+</server>
+</servers>
+<profiles>
+<profile>
+<id>github</id>
+<repositories>
+<repository>
+<id>github-parent</id>
+<url>https://maven.pkg.github.com/pmensalt/pieter-pom</url>
+</repository>
+</repositories>
+</profile>
+</profiles>
+<activeProfiles>
+<activeProfile>github</activeProfile>
+</activeProfiles>
 </settings>
 EOF
           
