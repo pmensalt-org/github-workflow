@@ -49,8 +49,7 @@ jobs:
                 <username>${GITHUB_ACTOR}</username>
                 <password>${GITHUB_TOKEN}</password>
               </server>
-            </servers>
-      
+            </servers>      
             <profiles>
               <profile>
                 <id>github</id>
@@ -61,15 +60,13 @@ jobs:
                   </repository>
                 </repositories>
               </profile>
-            </profiles>
-      
+            </profiles>      
             <activeProfiles>
               <activeProfile>github</activeProfile>
             </activeProfiles>
           </settings>
 EOF
 
-          
       - name: Display Maven settings
         run: cat ~/.m2/settings.xml
           
