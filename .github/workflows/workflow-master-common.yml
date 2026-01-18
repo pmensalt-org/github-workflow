@@ -109,9 +109,10 @@ jobs:
       - name: Publish to GitHub Packages Apache Maven
         if: ${{ success() && inputs.publish }}
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
           TOKEN_WRITE_PACKAGE: ${{ secrets.TOKEN_WRITE_PACKAGE }}
-        run: mvn --batch-mode deploy --settings settings.xml
+        run: mvn --batch-mode deploy
 
       - name: Commit new version
         if: success()
