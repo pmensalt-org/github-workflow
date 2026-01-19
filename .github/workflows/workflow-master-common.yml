@@ -20,7 +20,10 @@ on:
         default: true
       settings-file:
         required: true
-        type: string   
+        type: string
+    secrets:
+      TOKEN_READ_PACKAGE:
+        required: true    
 
 jobs:
   workflow-master-common:
@@ -74,21 +77,24 @@ jobs:
 
       - name: Download Settings File
         run: |
-          curl -o settings.xml -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ inputs.settings-file }}     
+          curl -o settings.xml -H "Authorization: token ${{ secrets.TOKEN_READ_PACKAGE }}" ${{ inputs.settings-file }}     
 
       - name: Set maven version
         if: ${{ inputs.increment-version && !inputs.increment-version-property }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
         run: mvn versions:set -DnewVersion=${{ steps.tag_version.outputs.new_version }} --settings settings.xml
         
       - name: Set maven property version
         if: ${{ inputs.increment-version && inputs.increment-version-property}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
         run: mvn versions:set-property -Dproperty=${{ inputs.increment-version-property }} -DnewVersion=${{ steps.tag_version.outputs.new_version }} --settings settings.xml
         
       - name: Build with Maven
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
         run: mvn -B package --file pom.xml --settings settings.xml  
