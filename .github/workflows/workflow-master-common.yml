@@ -17,8 +17,7 @@ on:
         default: true
       increment-version-property:
         required: false
-        type: boolean
-        default: false
+        type: string
       debug-mode:
         required: false
         type: boolean
