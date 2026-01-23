@@ -36,8 +36,8 @@ jobs:
   workflow-master-common:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: read
+      contents: write
+      packages: write
     concurrency:
       group: master
     steps:
