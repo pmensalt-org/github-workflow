@@ -48,7 +48,7 @@ jobs:
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.TOKEN_READ_PACKAGE }}
           
       - name: Display the tag
         if: ${{ inputs.debug-mode && inputs.increment-version }}
@@ -82,19 +82,19 @@ jobs:
       - name: Set maven version
         if: ${{ inputs.increment-version && !inputs.increment-version-property }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_READ_PACKAGE }}
           TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
         run: mvn versions:set -DnewVersion=${{ steps.tag_version.outputs.new_version }} --settings settings.xml
         
       - name: Set maven property version
         if: ${{ inputs.increment-version && inputs.increment-version-property}}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_READ_PACKAGE }}
           TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
         run: mvn versions:set-property -Dproperty=${{ inputs.increment-version-property }} -DnewVersion=${{ steps.tag_version.outputs.new_version }} --settings settings.xml
         
       - name: Build with Maven
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_READ_PACKAGE }}
           TOKEN_READ_PACKAGE: ${{ secrets.TOKEN_READ_PACKAGE }}
         run: mvn -B package --file pom.xml --settings settings.xml  
