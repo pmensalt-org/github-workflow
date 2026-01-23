@@ -3,6 +3,10 @@ name: Workflow Master Common
 on:
   workflow_call:
     inputs:
+      use-java:
+        required: false
+        type: boolean
+        default: true
       java-version:
         required: false
         type: string
@@ -25,8 +29,6 @@ on:
     secrets:
       TOKEN_READ_PACKAGE:
         required: true
-      GITHUB_TOKEN:
-        required: false
 
 jobs:
   workflow-master-common:
